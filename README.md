@@ -1,1 +1,0 @@
-# Learn_SQL_Basics_for_Data_Science
