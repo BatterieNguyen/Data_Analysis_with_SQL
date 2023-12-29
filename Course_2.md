@@ -1,7 +1,7 @@
 -----------
 # DATA WRANGLING, ANALYSIS, AND AB TESTING WITH SQL
 -----------
-## Week 1 - Data Unknown Quality
+## Module 1 - Data Unknown Quality
 ### 1. Error Codes
 ### 2. Flexible Data Formats
 __Types of tables__
@@ -195,11 +195,11 @@ __7. What if there were days where no users were created, but some users were de
 
 DONE.
 -----------
-## Week 2 - Creating Clean Datasets
+## Module 2 - Creating Clean Datasets
 
 -----------
-## Week 3 - SQL Problem Solving
+## Module 3 - SQL Problem Solving
 
 -----------
-## Week 4 - Case Study: AB Testing
+## Module 4 - Case Study: AB Testing
 
