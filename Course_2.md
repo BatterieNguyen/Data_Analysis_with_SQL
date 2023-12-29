@@ -199,7 +199,7 @@ DONE.
 ## Module 2 - Creating Clean Datasets
 ### 1. Data Type
 
-### 2. View-item Table
+### 2. Dependency
 __Dependency__: When the data in query refers to data in a preceding table.
 
 __Stale__: WHen the data in a table does not reflect the most up-to-date information.
@@ -211,6 +211,61 @@ __Extract-Transform-Load (ETL)__: Used to describe the steps happening during ta
 __Job__: The task given to a database to perform ETL.
 
 __Backfill__: To run a table creation/ update task on a range of dates in the past.
+
+### 3. View-item Table
+__Filtering and Cleaning__
+- Remove events generated while testing internally
+- Trim long-tail categorical data
+- Replace nulls with appropriate values
+
+__The purpose of creating table__
+- Cleanliness - Will make it easier to read future queries
+- Efficiency - Computing once; result the results
+- Standardiation - Counting the same way
+
+__Dependencies__
+- Upstream Metric
+  - Need to be fresh __before__ recomputing view_item_events
+  - Users Table, Orders Table
+- Downstream Metric
+  - Need to be fresh __after__ recomputing view_item_events
+  - Tables we have not built yet: AB Testing metrics, or a most recently viewed items table
+  - Dashboard tables, Prediction scores computed using these features
+
+__Note__: 
+- Different to creating a table, creating a view table does __not__ require to specify the __data type__.
+
+#### _Syntax_
+__Create a viewed table__
+```
+CREATE TABLE view_item_events_1
+AS
+        SELECT {columns}
+        FROM {table};
+```
+__Check datatype and Null of table__
+```
+DESCRIBE view_item_events_1;
+```
+__Replace into table__
+```
+REPLACE INTO view_item_events
+```
+### 4. Hierachy of Data
+__The Hierachy of needs__
+| __From Bottom to Top__ | Description |
+| ----------- | ------------ |
+| __Collect__ | Intrusmentation, Logging, Sensors, External Data, User Generated Content |
+| __Move/ Store__ | Reliable Data Flow, Infrastructure, Piplines, ETL, Structured and Unstructured Data Storage |
+| __Explore/ Transform__ | Cleaning, Anomaly etection, Prep |
+| __Aggregate/ Label Data__ | Analytics, Metrics, Segments, Aggregates, Features, Training Data |
+| __Learn/ Optimize__ | A/B Testing, Experimentation, Simple ML Agorithms |
+| | AI, DEEP LEARNING |
+
+### 5. User Snapshot Table
+
+
+
 
 -----------
 ## Module 3 - SQL Problem Solving
