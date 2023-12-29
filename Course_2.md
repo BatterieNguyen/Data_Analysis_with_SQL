@@ -122,3 +122,78 @@ FROM    dsv1069.orders JOIN  dsv1069.users
                         ON  orders.user_id = COALESCE(users.parent_user_id, users.id)
 ```
 ### 4. Answering Ambiguous Questions
+Define metrics => An __AB Test__ can help to determine if the change is an improvement
+#### _Exercise: Counting Users_
+__1. Using the users table to answer the question "How many new users are added each day?__
+```
+SELECT DATE(created_at)  AS Day
+        , COUNT(*) AS Users
+FROM    dsv1069.users
+GROUP BY Day
+ORDER BY Day ASC;
+```
+__2. Without worrying about deleted user or merged users, count the number of users added each day__
+```
+SELECT DATE(created_at)  AS Day
+        , COUNT(id) AS Users
+FROM    dsv1069.users
+GROUP BY Day
+ORDER BY Day ASC;
+```
+__3. Considering the following uery. Is this the right way to count merged or deleted users? If all of our users were deleted tomorrow what would the result look like?__
+```
+SELECT DATE(created_at)  AS Day
+        , COUNT(*) AS Users
+FROM    dsv1069.users
+WHERE   deleted_at IS NULL
+        AND (id <> parent_user_id OR parent_user_id IS NULL)
+GROUP BY Day
+ORDER BY Day ASC;
+```
+__4. Count the number of users deleted each day. Then count the number of users removed due to merging in a mimilar way.__
+```
+SELECT DATE(created_at)  AS Day
+        , COUNT(*) AS Users
+FROM    dsv1069.users
+WHERE   deleted_at IS NOT NULL
+GROUP BY Day
+ORDER BY Day ASC;
+```
+__5. Use the pieces buil as subtables and create a table that has a column for the date, the number of users created, the number of users deleted and the number of users merged that day.__
+```
+SELECT  new.Day
+        , new.new_added_users
+        , COALESCE(deleted.deleted_users, 0) AS deleted_users
+        , COALESCE(merged.merged_users, 0) AS merged_users
+        , (new.new_added_users - COALESCE(deleted.deleted_users, 0) - COALESCE(merged.merged_users, 0))
+                AS net_added_users
+FROM
+(        SELECT DATE(created_at) AS Day
+                , COUNT(*) AS new_added_users
+        FROM    dsv1069.users
+        GROUP BY Day) new
+LEFT JOIN
+(        SELECT DATE(deleted_at) AS Day
+                , COUNT(*) AS deleted_users
+        FROM   dsv1069.users
+        WHERE  deleted_at IS NOT NULL
+        GROUP BY Day) deleted
+ON        deleted.Day = new.Day
+LEFT JOIN
+(        SELECT DATE(mergedd_at) AS Day
+                , COUNT(*) AS merged_users
+        FROM   dsv1069.users
+        WHERE  (id <> parent_user_id AND parent_user_id IS NOT NULL)
+        GROUP BY Day) merged
+ON merged.Day = new.Day
+```
+__6. Refine your query from #5 to have informative column names and so that null columns return 0.__
+```
+
+```
+__7. What if there were days where no users were created, but some users were deleted or merged. Doe the previous query still work? NO, it does not. Use the dates_rollup as a backbon for this query, so that we will not miss any dates.__
+
+```
+
+```
+
