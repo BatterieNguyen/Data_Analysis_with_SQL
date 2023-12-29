@@ -188,12 +188,11 @@ LEFT JOIN
 ON merged.Day = new.Day
 ```
 __6. Refine your query from #5 to have informative column names and so that null columns return 0.__
-```
 
-```
+DONE.
+
 __7. What if there were days where no users were created, but some users were deleted or merged. Doe the previous query still work? NO, it does not. Use the dates_rollup as a backbon for this query, so that we will not miss any dates.__
 
-```
+DONE.
 
-```
 
