@@ -197,6 +197,20 @@ DONE.
 
 -----------
 ## Module 2 - Creating Clean Datasets
+### 1. Data Type
+
+### 2. View-item Table
+__Dependency__: When the data in query refers to data in a preceding table.
+
+__Stale__: WHen the data in a table does not reflect the most up-to-date information.
+
+__Pipeline__: Events --> viewed_item events table --> Most Recently Viewed Item.
+
+__Extract-Transform-Load (ETL)__: Used to describe the steps happening during table creation.
+
+__Job__: The task given to a database to perform ETL.
+
+__Backfill__: To run a table creation/ update task on a range of dates in the past.
 
 -----------
 ## Module 3 - SQL Problem Solving
