@@ -194,6 +194,7 @@ DONE.
 __7. What if there were days where no users were created, but some users were deleted or merged. Doe the previous query still work? NO, it does not. Use the dates_rollup as a backbon for this query, so that we will not miss any dates.__
 
 DONE.
+
 -----------
 ## Module 2 - Creating Clean Datasets
 
