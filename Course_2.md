@@ -279,9 +279,8 @@ __Partitions__
 - make updates // retrieval // joins faster.
 -----------
 ## Module 3 - SQL Problem Solving
-__A strategy for tackling any complicated query__
-
-Figure out potential questions --> Identify what end table looks like --> Identify tables need to be built --> Build subqueries (build viewd-item events and put it in own tables) --> Test Joins --> Give columns distinct names --> 
+__A strategy for tackling any complicated query__ 
+> Figure out potential questions --> Identify what end table looks like --> Identify tables need to be built --> Build subqueries (build viewd-item events and put it in own tables) --> Test Joins --> Give columns distinct names.
 -----------
 ## Module 4 - Case Study: AB Testing
 
