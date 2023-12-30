@@ -264,6 +264,20 @@ __The Hierachy of needs__
 
 ### 5. User Snapshot Table
 
+### 6. Partitions in Hive
+__Hadoop__
+- is a whole ecosystem of tools that work with a distributed file system (HDFS).
+- If data is big, you can store it across multiple servers: clusters.
+- Hadoop helps nodes communicate with each other.
+
+__Hive__
+- Takes a SQL-like code (HQL) and turns it into a mapreduce job that can run on HDFS.
+
+__Partitions__
+- Feature of Hadoop => think of it like a pre-sorting into folders
+- Not change the way you query the table.
+- make updates // retrieval // joins faster.
+
 
 
 
