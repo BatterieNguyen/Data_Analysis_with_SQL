@@ -595,7 +595,6 @@ ON	first_orders.user_id = second_orders.user_id
 WHERE
 	first_orders.order_num = 1	AND	second_orders.order_num = 2 
 ```
-### 5. Coding with Style
 -----------
 ## Module 4 - Case Study: AB Testing
 
