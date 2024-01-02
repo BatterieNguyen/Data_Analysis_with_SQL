@@ -281,6 +281,223 @@ __Partitions__
 ## Module 3 - SQL Problem Solving
 __A strategy for tackling any complicated query__ 
 > Figure out potential questions --> Identify what end table looks like --> Identify tables need to be built --> Build subqueries (build viewd-item events and put it in own tables) --> Test Joins --> Give columns distinct names.
+
+### 1. Rollup Table
+#### _Exercise:
+__1. Create a subtable of orders per day. Make sure you decide whether you are counting invoices // lines items. (Daily Rollup Table)__
+```
+SELECT
+        DATE(paid_at)                     AS Day,
+        COUNT(DISTINCT invoice_id)        AS orders,
+        COUNT(DISTINCT line_item_id)      AS line_items
+FROM
+        dsv1069.orders
+GROUP BY
+        DATE(paid_at);
+```
+__2. Daily Rollup | Test Joins__
+```
+SELECT * FROM dsv1069.date_rollup
+LEFT OUTER JOIN
+(
+        SELECT
+                DATE(paid_at)                     AS Day,
+                COUNT(DISTINCT invoice_id)        AS orders,
+                COUNT(DISTINCT line_item_id)      AS line_items
+        FROM
+                dsv1069.orders
+        GROUP BY
+                DATE(paid_at);
+) daily_orders
+ON
+        daily_orders.Day = dates_rollup.date;
+```
+__3. Daily Rollup | Column CLeanup__
+```
+SELECT
+        dates_rollup.date,
+		COALESCE(SUM(orders), 0)		AS orders,
+		COALESCE(SUM(items_ordered), 0) AS items_ordered
+FROM
+        dsv1069.date_rollup
+LEFT OUTER JOIN
+(
+        SELECT
+                DATE(paid_at)                     AS Day,
+                COUNT(DISTINCT invoice_id)        AS orders,
+                COUNT(DISTINCT line_item_id)      AS line_items
+        FROM
+                dsv1069.orders
+        GROUP BY
+                DATE(paid_at);
+) daily_orders
+ON
+        daily_orders.Day = dates_rollup.date
+GROUP BY
+        dates_rollup.date;
+```
+__4. Weekly Rollup__
+```
+SELECT	*
+FROM
+        dsv1069.date_rollup
+LEFT OUTER JOIN
+(
+        SELECT
+                DATE(paid_at)                     AS Day,
+                COUNT(DISTINCT invoice_id)        AS orders,
+                COUNT(DISTINCT line_item_id)      AS line_items
+        FROM
+                dsv1069.orders
+        GROUP BY
+                DATE(paid_at);
+) daily_orders
+ON
+	dates_rollup.date >= daily_orders.Day
+AND
+	dates_rollup.d7_ago < daily_orders.Day;	
+```
+__5. Weekly Rollup | Column Cleanup__
+```
+SELECT
+	dates_rollup.date,
+	COALESCE(SUM(orders), 0)		AS orders,
+	COALESCE(SUM(items_ordered), 0) AS items_ordered,
+	COUNT(*)						AS rows	
+FROM
+        dsv1069.date_rollup
+LEFT OUTER JOIN
+(
+        SELECT
+                DATE(paid_at)                     AS Day,
+                COUNT(DISTINCT invoice_id)        AS orders,
+                COUNT(DISTINCT line_item_id)      AS line_items
+        FROM
+                dsv1069.orders
+        GROUP BY
+                DATE(paid_at);
+) daily_orders
+ON
+	dates_rollup.date >= daily_orders.Day
+AND
+	dates_rollup.d7_ago < daily_orders.Day;
+GROUP BY
+        dates_rollup.date;
+```
+### 2. Windowing Function
+```
+SELECT
+	user_id, invoice_id, paid_at
+	RANK( ) 		OVER(PARTITION BY	user_id	ORDER BY	paid_at	ASC)
+		AS order_num,
+	DENSE_RANK( )	OVER(PARTITION BY 	user_id ORDER BY	paid_at ASC)
+		AS dense_order_num,
+	ROW_NUMBER()	OVER(PARTITION BY	user_id	ORDER BY	paid_at ASC)
+		AS row_num
+FROM
+	dsv10669.orders;
+```
+__Similar Functions__
+- `RANK() OVER(PARTITION BY ____ ORDER BY ____) AS rank`
+- `ROW_NUMBER() OVER(PARTITION BY ____ ORDER BY ____) AS row_number`
+- `SUM() OVER(PARTITION BY ____ ORDER BY ____) AS running_total`
+- `COUNT() OVER(PARTITION BY ____ ORDER BY ____) AS running_count`
+
+### 3. Case Study: Rollup Table | Promo Email
+__1. Create the right subtable for recently viewed events using view_item_events table (Ranked User Views)__
+```
+SELECT
+	user_id, item_id, event_time,
+	ROW_NUMBER( )	OVER(PARTITION BY	user_id	ORDER BY	event_time DESC)
+		AS view_number
+FROM
+	dsv1069.view_item_events;
+```
+__2. Skeletion Query__
+```
+SELECT *
+FROM
+(
+	SELECT
+		user_id, item_id, event_time,
+		ROW_NUMBER( )	OVER(PARTITION BY	user_id	ORDER BY	event_time DESC)
+			AS view_number
+	FROM
+		dsv1069.view_item_events
+) recent_views
+JOIN
+	dsv1069.users
+ON
+	users.id = recent_views.user_id
+JOIN
+	dsv1069.items
+ON
+	users.id = recent_views.item_id;
+```
+__3. With Column__
+```
+SELECT
+	users.id		AS user_id,
+	users.email_address,
+	items.id		AS item_id,
+	items.name		AS item_name,
+	items.category	AS item_category
+FROM
+(
+	SELECT
+		user_id, item_id, event_time,
+		ROW_NUMBER( )	OVER(PARTITION BY	user_id	ORDER BY	event_time DESC)
+			AS view_number
+	FROM
+		dsv1069.view_item_events
+) recent_views
+JOIN
+	dsv1069.users
+ON
+	users.id = recent_views.user_id
+JOIN
+	dsv1069.items
+ON
+	users.id = recent_views.item_id;
+```
+__4. Fine Tuning__
+```
+SELECT
+	COALESCE(users.parent_user_id, users.id)	AS user_id,
+	users.email_address,
+	items.id									AS item_id,
+	items.name									AS item_name,
+	items.category								AS item_category
+FROM
+(
+	SELECT
+		user_id, item_id, event_time,
+		ROW_NUMBER( )	OVER(PARTITION BY	user_id	ORDER BY	event_time DESC)
+			AS view_number
+	FROM
+		dsv1069.view_item_events
+	WHERE
+		event_time >= '2017-01-01'
+) recent_views
+JOIN
+	dsv1069.users	ON	users.id = recent_views.user_id
+JOIN
+	dsv1069.items	ON	users.id = recent_views.item_id
+LEFT OUTER JOIN
+	dsv1069.orders	ON	orders.item_id = recent_views.item_id
+	AND
+		orders.user_id = recent_views.user_id
+WHERE
+	view_number = 1
+AND
+	users.deleted_at IS NOT NULL
+AND
+	orders.item_id IS NULL;
+```
+### 4. Exercise: Product Analysis
+
+
+### 5. Coding with Style
 -----------
 ## Module 4 - Case Study: AB Testing
 
