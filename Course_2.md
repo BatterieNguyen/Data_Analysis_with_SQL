@@ -511,8 +511,8 @@ SELECT
 FROM
 (
 	SELECT
-		user_id, item_id,
-		COUNT(DISTINCT line_item_id) AS times_user_ordered	
+			user_id, item_id,
+			COUNT(DISTINCT line_item_id) AS times_user_ordered	
 	FROM	dsv1069.users
 	GROUP BY
 		user_id, item_id
@@ -523,13 +523,78 @@ WHERE	times_user_ordered > 1;
 __3. Multiple Orders__
 ```
 SELECT
-	user_id,
-	COUNT(DISTINT invoice_id) AS order_count
-FROM	dsv1069.orders
-GROUP BY
-	user_id;
+	COUNT(DISTINCT user_id)
+FROM	(
+	SELECT
+			user_id,
+			COUNT(DISTINT invoice_id) AS order_count
+	FROM	dsv1069.orders
+	GROUP BY
+		user_id
+	) user_level
+WHERE	order_count > 1;
 ```
-
+__4. Orders per item__
+```
+SELECT
+		item_id,
+		COUNT(line_item_id) AS time_ordered
+FROM	dsv1069.orders
+GROUP BY item_id;
+```
+__5. Orders per Category__
+```
+SELECT
+		item_category,
+		COUNT(line_item_id) AS time_ordered
+FROM	dsv1069.orders
+GROUP BY item_category;
+```
+__6. Did user order multiple things from the same category?__
+```
+SELECT
+	item_category,
+	AVG(times_category_ordered) AS avg_times_category_ordered
+FROM	(
+	SELECT
+			user_id,
+			item_category,
+			COUNT(DISTINCT line_item_id) AS	time_category_ordered
+	FROM	dsv1069.orders
+	GROUP BY
+			user_id,
+			item_category
+		) user_level
+GROUP BY item_category;
+```
+__7. Find the average time between orders__
+```
+SELECT
+	first_orders.user_id,
+	DATE(first_orders.paid_at)			AS first_order_date,
+	DATE(second_orders.paid_at)			AS second _order_date,
+	DATE(second_orders.paid_at)
+		- DATE(first_orders.paid_at)	AS date_diff				# This will vary the depending on your flavor of SQL
+FROM	(
+	SELECT
+		user_id, invoice_id, paid_at,
+		DENSE_RANK( )	OVER(PARTITION BY user_id ORDER BY paid_at ASC)
+			AS order_num
+	FROM
+		dsv1069.orders
+		) first_orders
+JOIN	(
+	SELECT
+		user_id, invoice_id, paid_at,
+		DENSE_RANK( )	OVER(PARTITION BY user_id ORDER BY paid_at ASC)
+			AS order_num
+	FROM
+		dsv1069.orders
+		) second_orders
+ON	first_orders.user_id = second_orders.user_id
+WHERE
+	first_orders.order_num = 1	AND	second_orders.order_num = 2 
+```
 ### 5. Coding with Style
 -----------
 ## Module 4 - Case Study: AB Testing
