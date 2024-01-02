@@ -499,7 +499,36 @@ AND
 	orders.item_id IS NULL;
 ```
 ### 4. Exercise: Product Analysis
+__1. User Count__
+```
+SELECT	COUNT(*)
+FROM	dsv1069.users;
+```
+__2. Users with Orders and Reorders__
+```
+SELECT
+	COUNT(DISTINCT user_id)	AS users_who_reordered
+FROM
+(
+	SELECT
+		user_id, item_id,
+		COUNT(DISTINCT line_item_id) AS times_user_ordered	
+	FROM	dsv1069.users
+	GROUP BY
+		user_id, item_id
+) user_level_orders
+WHERE	times_user_ordered > 1;
 
+```
+__3. Multiple Orders__
+```
+SELECT
+	user_id,
+	COUNT(DISTINT invoice_id) AS order_count
+FROM	dsv1069.orders
+GROUP BY
+	user_id;
+```
 
 ### 5. Coding with Style
 -----------
