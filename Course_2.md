@@ -283,6 +283,9 @@ __A strategy for tackling any complicated query__
 > Figure out potential questions --> Identify what end table looks like --> Identify tables need to be built --> Build subqueries (build viewd-item events and put it in own tables) --> Test Joins --> Give columns distinct names.
 
 ### 1. Rollup Table
+__Uses of a Date Rollup Table__
+- Ceating dashboards with a compete set of dates
+- Efficiently computing aggregates over a rolling time period
 #### _Exercise:
 __1. Create a subtable of orders per day. Make sure you decide whether you are counting invoices // lines items. (Daily Rollup Table)__
 ```
@@ -385,6 +388,7 @@ GROUP BY
         dates_rollup.date;
 ```
 ### 2. Windowing Function
+__Definition__ - It is a function that computes a value on a certain partition // window of the data that is specified in the `PARTITION BY` statement.
 ```
 SELECT
 	user_id, invoice_id, paid_at
