@@ -597,5 +597,23 @@ WHERE
 ```
 -----------
 ## Module 4 - Case Study: AB Testing
+> __Learning Objective__
+> - Practice Data Quality checks
+> - Create a metric that is tied to a business value
+> - Aggregate a proportion metric and run the results through an AB Testing calculator tool
 
+__AB Testing__
+- Branch of statistics: Hypothesis Testing
+  > Hypothesis related to business metrics => Using multiple metrics allows to interpret results historically => to gain insights about effects of user behavior.
+- In ML, AB Testing is the final step in the agorithm development process
+
+__Confidence Interval__
+- `$\overline{x}$` - Observed mean
+- `n` - Number of samples
+- `$\sigma \Sigma$` - Standard Deviation - refer to the distribution one observation at a time 
+- Standard Error - refer to the distribution of means of the n observations
+  > Standard error and standard deviation are not the same __unless__ `n = 1`
+- Z-Score - Indicator of how much of the probability we want to consider
+  > - 95% Confidence means 95% of the time the true mean will be within our interval
+  > - Z-score is a multiplier
 
