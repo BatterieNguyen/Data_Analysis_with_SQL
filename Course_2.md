@@ -610,7 +610,7 @@ __AB Testing__
 __Confidence Interval__
 - `$\overline{x}$` - Observed mean
 - `n` - Number of samples
-- `$\sigma \Sigma$` - Standard Deviation - refer to the distribution one observation at a time 
+- `&sigma;` - Standard Deviation - refer to the distribution one observation at a time 
 - Standard Error - refer to the distribution of means of the n observations
   > Standard error and standard deviation are not the same __unless__ `n = 1`
 - Z-Score - Indicator of how much of the probability we want to consider
