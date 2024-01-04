@@ -184,3 +184,23 @@ GROUP BY
     test_events.user_id;
 ```
 # ANALYZING RESULTS
+__Metric Types__
+| __Proportion Metrics__ | | 
+| ------ | ------- |
+| Example | Order Binary |
+| Answers | How many users made an order? |
+| Values | 1 // 0 |
+| Average Value | In [0, 1] |
+| Can Answer | Did the variant cause more users to place an order |
+
+| __Mean Metrics__ | | 
+| ------ | ------- |
+| Example | Number of Orders |
+| Answers | How many orders did a user made? |
+| Values | Non-negative integer |
+| Average Value | In [0, infinity] |
+| Can Answer | Did the variant cause more users to create more orders |
+
+
+
+
