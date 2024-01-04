@@ -610,10 +610,23 @@ __AB Testing__
 __Confidence Interval__
 - `$\overline{x}$` - Observed mean
 - `n` - Number of samples
-- `&sigma;` - Standard Deviation - refer to the distribution one observation at a time 
+- `σ` - Standard Deviation - refer to the distribution one observation at a time
 - Standard Error - refer to the distribution of means of the n observations
   > Standard error and standard deviation are not the same __unless__ `n = 1`
 - Z-Score - Indicator of how much of the probability we want to consider
   > - 95% Confidence means 95% of the time the true mean will be within our interval
   > - Z-score is a multiplier
+
+__The relationship between n, Standard Error and Interval__
+- To make decision, look for where the confidence intervals do not overlap
+
+__Null Hypothesis__
+- means that nothing is different.
+- The confidence Interval would overlap because we are sampling to approximate the same value.
+
+__P-Value__
+- Tells what is the probability that the difference in means occurred because of natural variation on the samples
+- P-values  disprove the __Null Hypothesis__.
+
+
 
