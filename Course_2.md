@@ -30,37 +30,42 @@ __2. __
 
 GOAL: Add a column 'referrer' 
 ```
-SELECT  event_id, event_time, user_id, platform,
-        (CASE WHEN parameter_name = 'item_id'
-              THEN CAST(parameter_value AS INT)
-              ELSE NULL
-          END) AS item_id,
-        (CASE WHEN parameter_name = 'refferer'
-              THEN parameter_value
-              ELSE NULL
-          END) AS referrer
-FROM    dsv1069.events
-WHERE   event_name = 'view_item'
-ORDER BY  event_id;
+SELECT 
+      event_id, event_time, platform, user_id,
+      (CASE WHEN parameter_name = 'item_id'
+            THEN CAST(parameter_value AS INT)
+            ELSE NULL 
+            END) AS item_id,
+      (CASE WHEN parameter_name = 'referrer'
+            THEN parameter_value
+            ELSE NULL 
+            END) AS referrer
+FROM 
+      dsv1069.events 
+WHERE
+      event_name = 'view_item'
+ORDER BY event_id;
 ```
+__3. After running the previous query, there are null in the created column, item_id and referrer. Try to deal with that problem.__
 
-__3. __
-
-GOAL:
 ```
-SELECT  event_id, event_time, user_id, platform,
-        MAX(CASE WHEN parameter_name = 'item_id'
-              THEN CAST(parameter_value AS INT)
-              ELSE NULL
-          END) AS item_id,
-        MAX(CASE WHEN parameter_name = 'refferer'
-              THEN parameter_value
-              ELSE NULL
-          END) AS referrer
-FROM    dsv1069.events
-WHERE   event_name = 'view_item'
-GROUP BY  event_id, event_time, user_id, platform
-ORDER BY  event_id;
+SELECT 
+      event_id, event_time, platform, user_id,
+      MAX(CASE WHEN parameter_name = 'item_id'
+            THEN CAST(parameter_value AS INT)
+            ELSE NULL 
+            END) AS item_id,
+      MAX(CASE WHEN parameter_name = 'referrer'
+            THEN parameter_value
+            ELSE NULL 
+            END) AS referrer
+FROM 
+      dsv1069.events 
+WHERE
+      event_name = 'view_item'
+GROUP BY
+      event_id, event_time, platform, user_id
+LIMIT 20;
 ```
 ### 3. Unreliable Data + Nulls
 #### _Exercise_
