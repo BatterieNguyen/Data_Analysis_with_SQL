@@ -71,22 +71,30 @@ LIMIT 20;
 #### _Exercise_
 __1. Using any methods to determine if the event table can be trusted__
 ```
-SELECT  DATE(event_time) AS Date
-        ,COUNT(*)        AS rows
-FROM    dsv1069.events_201701
-GROUP BY  DATE(event_time);
+SELECT 
+  DATE(event_time)  AS Date,
+  COUNT(*)          AS rows  
+FROM 
+  dsv1069.events_201701
+GROUP BY
+  Date;
 ```
 __2. Using any methods to determine if the event table can be trusted__
 
 HINT: When did we start recording events on mobile. In this case, mobile logging has not been implemented until recently.
 ```
-SELECT  DATE(event_time) AS Date
-        , event_name
-        , COUNT(*)        AS rows
-FROM    dsv1069.events_ex2
-GROUP BY  DATE(event_time), event_name;
+SELECT 
+  DATE(event_time)  AS Date,
+  event_name,
+  COUNT(*)          AS rows
+FROM 
+  dsv1069.events_ex2
+GROUP BY
+  Date, event_name;
 ```
-__3. Imagine that yu need to count item views by day. You found this table item_views_by_category_temp. Should you use it to answer question?__
+___=>___ The answer is Yes as all the data is not null and visualized appropriately. It is also recommended if I can try on another columns (e.x. platform) instead of event_name to check null.
+
+__3. Imagine that you need to count item views by day. You found this table item_views_by_category_temp. Should you use it to answer question?__
 
 GOAL: Count item views by days by Category.
 ```
@@ -96,7 +104,7 @@ FROM    dsv1069.item_view_by_Category_temp
 ``` 
 SELECT  COUNT(DISTINCT event_id) AS event_count
 FROM    dsv1069.events
-WHERE   event_name = 'item_view'    
+WHERE   event_name = 'view_item'    
 ```
 __=>__ The event count was 10 bigger than item views by category. => It is __not__ good to use that table.
 
@@ -118,14 +126,19 @@ SELECT  DATE(event_time) AS Date
 FROM     dsv1069.raw_events
 GROUP BY DATE(event_time);
 ```
-__5. Is this the right way to join orders to users? Is this the right way this join.__
+___=> The answer is No.___
 
-HINT: Use COALESCE on user_id 
+__5. Is this the right way to join orders to users? Is this the right way this join.HINT: Use COALESCE on user_id__
 ```
-SELECT  COUNT(*)
-FROM    dsv1069.orders JOIN  dsv1069.users
-                        ON  orders.user_id = COALESCE(users.parent_user_id, users.id)
+SELECT
+  COUNT(*)
+FROM 
+  dsv1069.orders  
+  JOIN dsv1069.users  ON orders.user_id = COALESCE(users.parent_user_id, users.id);
+                                          -- If parent_user_id is null, id will be used
 ```
+___=> It is not right when the total rows is a lot smaller than the number of rows of orders table.
+
 ### 4. Answering Ambiguous Questions
 Define metrics => An __AB Test__ can help to determine if the change is an improvement
 #### _Exercise: Counting Users_
