@@ -60,7 +60,7 @@ For this problem, you will need to use four tables. The tables names and column 
 ### Table 1: Users
 This table includes one row per user, with descriptive information about that user's account.
 
-This table name in Mode is tutorial.yammer_users
+This table name in Mode is ___tutorial.yammer_users___
 - user_id:	A unique ID per user. Can be joined to user_id in either of the other tables.
 - created_at:	The time the user was created (first signed up)
 - state:	The state of the user (active or pending)
@@ -70,7 +70,7 @@ This table name in Mode is tutorial.yammer_users
 ### Table 2: Events
 This table includes one row per event, where an event is an action that a user has taken on Yammer. These events include login events, messaging events, search events, events logged as users progress through a signup funnel, events around received emails.
 
-This table name in Mode is tutorial.yammer_events
+This table name in Mode is ___tutorial.yammer_events___
 - user_id:	The ID of the user logging the event. Can be joined to user\_id in either of the other tables.
 - occurred_at:	The time the event occurred.
 - event_type:	The general event type. There are two values in this dataset: "signup_flow", which refers to anything occuring during the process of a user's authentication, and "engagement", which refers to general product usage after the user has signed up for the first time.
@@ -81,7 +81,7 @@ This table name in Mode is tutorial.yammer_events
 ### Table 3: Experiments
 This table shows which groups users are sorted into for experiments. There should be one row per user, per experiment (a user should not be in both the test and control groups in a given experiment).
 
-This table name in Mode is tutorial.yammer_experiments
+This table name in Mode is ___tutorial.yammer_experiments___
 - user_id:	The ID of the user logging the event. Can be joined to user_id in either of the other tables.
 - occurred_at:	The time the user was treated in that particular group.
 - experiment:	The name of the experiment. This indicates what actually changed in the product during the experiment.
