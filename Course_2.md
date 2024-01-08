@@ -428,12 +428,16 @@ __Similar Functions__
 ### 3. Case Study: Rollup Table | Promo Email
 __1. Create the right subtable for recently viewed events using view_item_events table (Ranked User Views)__
 ```
-SELECT
-	user_id, item_id, event_time,
-	ROW_NUMBER( )	OVER(PARTITION BY	user_id	ORDER BY	event_time DESC)
-		AS view_number
-FROM
-	dsv1069.view_item_events;
+SELECT 
+    user_id, item_id, event_time,
+    ROW_NUMBER()  OVER(PARTITION BY user_id ORDER BY event_time DESC)
+      AS row_number,
+    RANK()        OVER(PARTITION BY user_id ORDER BY event_time DESC)
+      AS rank,
+    DENSE_RANK()  OVER(PARTITION BY user_id ORDER BY event_time DESC)
+      AS dense_rank
+FROM 
+    dsv1069.view_item_events;
 ```
 __2. Skeletion Query__
 ```
@@ -456,66 +460,70 @@ JOIN
 ON
 	users.id = recent_views.item_id;
 ```
-__3. With Column__
+__3. Clean up your columns__
 ```
-SELECT
-	users.id		AS user_id,
-	users.email_address,
-	items.id		AS item_id,
-	items.name		AS item_name,
-	items.category	AS item_category
-FROM
-(
-	SELECT
-		user_id, item_id, event_time,
-		ROW_NUMBER( )	OVER(PARTITION BY	user_id	ORDER BY	event_time DESC)
-			AS view_number
-	FROM
-		dsv1069.view_item_events
-) recent_views
-JOIN
-	dsv1069.users
-ON
-	users.id = recent_views.user_id
-JOIN
-	dsv1069.items
-ON
-	users.id = recent_views.item_id;
+SELECT 
+      users.id        AS user_id,
+      users.email_address,
+      items.id        AS item_id,
+      items.name      AS item_name,
+      items.category  AS item_category
+FROM  (
+        SELECT 
+            user_id, item_id, event_time,
+            ROW_NUMBER()  OVER(PARTITION BY user_id ORDER BY event_time DESC)
+              AS row_number
+        FROM 
+            dsv1069.view_item_events
+      ) recently_views
+JOIN 
+      dsv1069.users
+      ON users.id = recently_views.user_id
+JOIN 
+      dsv1069.items 
+      ON items.id = recently_views.item_id
+WHERE 
+      row_number = 1;
 ```
-__4. Fine Tuning__
+___=> The goal of all this is to return all of the information we’ll need to send users an email about the item they viewed more recently (row_number =1 ).___
+
+__4. Fine Tuning: Add in any extra filtering that you think would make this email better__
 ```
-SELECT
-	COALESCE(users.parent_user_id, users.id)	AS user_id,
-	users.email_address,
-	items.id									AS item_id,
-	items.name									AS item_name,
-	items.category								AS item_category
-FROM
-(
-	SELECT
-		user_id, item_id, event_time,
-		ROW_NUMBER( )	OVER(PARTITION BY	user_id	ORDER BY	event_time DESC)
-			AS view_number
-	FROM
-		dsv1069.view_item_events
-	WHERE
-		event_time >= '2017-01-01'
-) recent_views
-JOIN
-	dsv1069.users	ON	users.id = recent_views.user_id
-JOIN
-	dsv1069.items	ON	users.id = recent_views.item_id
-LEFT OUTER JOIN
-	dsv1069.orders	ON	orders.item_id = recent_views.item_id
-	AND
-		orders.user_id = recent_views.user_id
-WHERE
-	view_number = 1
-AND
-	users.deleted_at IS NOT NULL
-AND
-	orders.item_id IS NULL;
+SELECT 
+      COALESCE(users.parent_user_id, users.id)  AS user_id,
+      users.email_address,
+      items.id                                  AS item_id,
+      items.name                                AS item_name,
+      items.category                            AS item_category
+FROM  (
+        SELECT 
+            user_id, item_id, event_time,
+            ROW_NUMBER()  OVER(PARTITION BY user_id ORDER BY event_time DESC)
+              AS row_number
+        FROM 
+            dsv1069.view_item_events
+        WHERE 
+            event_time >= '2017-01-01'
+      ) recently_views
+JOIN 
+      dsv1069.users
+      ON users.id = recently_views.user_id
+JOIN 
+      dsv1069.items 
+      ON items.id = recently_views.item_id
+LEFT OUTER JOIN 
+      dsv1069.orders 
+      ON  orders.item_id = recently_views.item_id  
+      AND orders.user_id = recently_views.user_id 
+WHERE 
+      row_number = 1
+      AND
+      users.deleted_at IS NOT NULL
+      AND
+      orders.item_id IS NULL;
 ```
+___=> Add filter to make sure emails are sent to users who are not deleted or merged. Also, it is recommended to make sure that email are not sent to users who has viewed item 10 years ago `event_time >= '2017-01-01'`. Finally, this table exclude people who have viewed and bought the items.___
+
 ### 4. Exercise: Product Analysis
 __1. User Count__
 ```
