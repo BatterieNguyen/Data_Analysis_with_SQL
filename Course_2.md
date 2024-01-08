@@ -218,18 +218,12 @@ DONE.
 ### 1. Data Type
 
 ### 2. Dependency
-__Dependency__: When the data in query refers to data in a preceding table.
-
-__Stale__: WHen the data in a table does not reflect the most up-to-date information.
-
-__Pipeline__: Events --> viewed_item events table --> Most Recently Viewed Item.
-
-__Extract-Transform-Load (ETL)__: Used to describe the steps happening during table creation.
-
-__Job__: The task given to a database to perform ETL.
-
-__Backfill__: To run a table creation/ update task on a range of dates in the past.
-
+* __Dependency__: When the data in query refers to data in a preceding table.
+* __Stale__: WHen the data in a table does not reflect the most up-to-date information.
+* __Pipeline__: Events --> viewed_item events table --> Most Recently Viewed Item.
+* __Extract-Transform-Load (ETL)__: Used to describe the steps happening during table creation.
+* __Job__: The task given to a database to perform ETL.
+* __Backfill__: To run a table creation/ update task on a range of dates in the past.
 ### 3. View-item Table
 __Filtering and Cleaning__
 - Remove events generated while testing internally
@@ -316,95 +310,101 @@ FROM
 GROUP BY
         DATE(paid_at);
 ```
+___=> Because there are some days missing in this Daily Rollup Table --> it is necessary to join this table into the Dates Rollup Table ---> Exercise 2___
+
 __2. Daily Rollup | Test Joins__
 ```
-SELECT * FROM dsv1069.date_rollup
-LEFT OUTER JOIN
-(
-        SELECT
-                DATE(paid_at)                     AS Day,
-                COUNT(DISTINCT invoice_id)        AS orders,
-                COUNT(DISTINCT line_item_id)      AS line_items
-        FROM
-                dsv1069.orders
-        GROUP BY
-                DATE(paid_at);
-) daily_orders
-ON
-        daily_orders.Day = dates_rollup.date;
+SELECT *
+FROM  dsv1069.dates_rollup
+```
+`Note:` Date rollup table includes 3 columns, date, d7_ago, and d28_ago.
+
+```
+SELECT *
+FROM 
+    dsv1069.dates_rollup
+    LEFT OUTER JOIN 
+    (
+      SELECT 
+          DATE(paid_at)                AS date_order,
+          COUNT(DISTINCT invoice_id)   AS invoices_per_day,
+          COUNT(DISTINCT line_item_id) AS line_items_per_day
+      FROM 
+          dsv1069.orders
+      GROUP BY  date_order
+    ) daily_rollup
+    ON daily_rollup.date_order = dates_rollup.date;
 ```
 __3. Daily Rollup | Column CLeanup__
 ```
-SELECT
-        dates_rollup.date,
-		COALESCE(SUM(orders), 0)		AS orders,
-		COALESCE(SUM(items_ordered), 0) AS items_ordered
-FROM
-        dsv1069.date_rollup
-LEFT OUTER JOIN
+SELECT 
+    dates_rollup.date,
+    COALESCE(daily_rollup.invoices_per_day, 0)    AS invoices_per_day,
+    COALESCE(daily_rollup.line_items_per_day, 0)  AS line_item_per_day
+FROM  
+    dsv1069.dates_rollup
+LEFT OUTER JOIN 
 (
-        SELECT
-                DATE(paid_at)                     AS Day,
-                COUNT(DISTINCT invoice_id)        AS orders,
-                COUNT(DISTINCT line_item_id)      AS line_items
-        FROM
-                dsv1069.orders
-        GROUP BY
-                DATE(paid_at);
-) daily_orders
-ON
-        daily_orders.Day = dates_rollup.date
-GROUP BY
-        dates_rollup.date;
+  SELECT 
+        DATE(paid_at)                AS date_order,
+        COUNT(DISTINCT invoice_id)   AS invoices_per_day,
+        COUNT(DISTINCT line_item_id) AS line_items_per_day
+  FROM  dsv1069.orders
+  GROUP BY  date_order 
+) daily_rollup
+ON  dates_rollup.date = daily_rollup.date_order;
 ```
+___=> In this table, there are uneccessary clumns cleaned up (d7_ago, d28_ago) and '0' is replaced at where value is null.___
+
 __4. Weekly Rollup__
 ```
-SELECT	*
-FROM
-        dsv1069.date_rollup
-LEFT OUTER JOIN
+SELECT 
+    dates_rollup.*,
+    daily_rollup.date_order,
+    COALESCE(daily_rollup.invoices_per_day, 0)    AS invoices_per_day,
+    COALESCE(daily_rollup.line_items_per_day, 0)  AS line_item_per_day
+FROM  
+    dsv1069.dates_rollup
+LEFT OUTER JOIN 
 (
-        SELECT
-                DATE(paid_at)                     AS Day,
-                COUNT(DISTINCT invoice_id)        AS orders,
-                COUNT(DISTINCT line_item_id)      AS line_items
-        FROM
-                dsv1069.orders
-        GROUP BY
-                DATE(paid_at);
-) daily_orders
-ON
-	dates_rollup.date >= daily_orders.Day
-AND
-	dates_rollup.d7_ago < daily_orders.Day;	
+  SELECT 
+        DATE(paid_at)                AS date_order,
+        COUNT(DISTINCT invoice_id)   AS invoices_per_day,
+        COUNT(DISTINCT line_item_id) AS line_items_per_day
+  FROM  dsv1069.orders
+  GROUP BY  date_order 
+) daily_rollup
+ON  dates_rollup.date >= daily_rollup.date_order
+    AND
+    dates_rollup.d7_ago < daily_rollup.date_order;
 ```
+___=> The purpose of this action is to make sure that the table present days within the 7-day rolling period.___
+
 __5. Weekly Rollup | Column Cleanup__
 ```
-SELECT
-	dates_rollup.date,
-	COALESCE(SUM(orders), 0)		AS orders,
-	COALESCE(SUM(items_ordered), 0) AS items_ordered,
-	COUNT(*)						AS rows	
-FROM
-        dsv1069.date_rollup
-LEFT OUTER JOIN
+SELECT 
+    dates_rollup.date,
+    COALESCE(SUM(daily_rollup.invoices_per_day), 0)    AS invoices_per_day,
+    COALESCE(SUM(daily_rollup.line_items_per_day), 0)  AS line_item_per_day,
+    COUNT(*)                                           AS period
+FROM  
+    dsv1069.dates_rollup
+LEFT OUTER JOIN 
 (
-        SELECT
-                DATE(paid_at)                     AS Day,
-                COUNT(DISTINCT invoice_id)        AS orders,
-                COUNT(DISTINCT line_item_id)      AS line_items
-        FROM
-                dsv1069.orders
-        GROUP BY
-                DATE(paid_at);
-) daily_orders
-ON
-	dates_rollup.date >= daily_orders.Day
-AND
-	dates_rollup.d7_ago < daily_orders.Day;
-GROUP BY
-        dates_rollup.date;
+  SELECT 
+        DATE(paid_at)                AS date_order,
+        COUNT(DISTINCT invoice_id)   AS invoices_per_day,
+        COUNT(DISTINCT line_item_id) AS line_items_per_day
+  FROM  dsv1069.orders
+  GROUP BY  date_order 
+) daily_rollup
+ON  dates_rollup.date >= daily_rollup.date_order
+    AND
+    dates_rollup.d7_ago < daily_rollup.date_order
+GROUP BY date; 
 ```
+___=> This table has period column which present the count of 7 days collapsed.___
+
 ### 2. Windowing Function
 __Definition__ - It is a function that computes a value on a certain partition // window of the data that is specified in the `PARTITION BY` statement.
 ```
