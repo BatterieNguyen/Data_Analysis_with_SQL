@@ -198,18 +198,18 @@ LEFT JOIN
         GROUP BY Day) deleted
 ON        deleted.Day = new.Day
 LEFT JOIN
-(        SELECT DATE(mergedd_at) AS Day
+(        SELECT DATE(merged_at) AS Day
                 , COUNT(*) AS merged_users
         FROM   dsv1069.users
         WHERE  (id <> parent_user_id AND parent_user_id IS NOT NULL)
         GROUP BY Day) merged
-ON merged.Day = new.Day
+ON merged.Day = new.Day;
 ```
 __6. Refine your query from #5 to have informative column names and so that null columns return 0.__
 
 DONE.
 
-__7. What if there were days where no users were created, but some users were deleted or merged. Doe the previous query still work? NO, it does not. Use the dates_rollup as a backbon for this query, so that we will not miss any dates.__
+__7. What if there were days where no users were created, but some users were deleted or merged. Doe the previous query still work? NO, it does not. Use the dates_rollup as a backbone for this query, so that we will not miss any dates.__
 
 DONE.
 
