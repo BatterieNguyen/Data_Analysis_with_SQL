@@ -1,6 +1,5 @@
 -- Profiling Data
 -- 1. Distributions
-
 -- 1.1. Histograms // Frequencies 
 -- (GROUP BY)
 
@@ -37,12 +36,17 @@ SELECT	bins,
 		COUNT(order_id)	AS num_of_orders
 FROM	(
 		SELECT	ord.customer_id, ord.order_id,
-				SUM(ite.list_price) AS order_amount,
-				NTILE(10) OVER (ORDER BY SUM(ite.list_price)) AS bins
+			SUM(ite.list_price) AS order_amount,
+			NTILE(10) OVER (ORDER BY SUM(ite.list_price)) AS bins
 		FROM	sales.orders ord
-				INNER JOIN	sales.order_items ite ON ord.order_id = ite.order_id
-		GROUP BY ord.customer_id, ord.order_id) bin_range
+			INNER JOIN	sales.order_items ite ON ord.order_id = ite.order_id
+		GROUP BY ord.customer_id, ord.order_id
+	) bin_range
 GROUP BY bins 
 ORDER BY 1;
 
 -- PERCENT_TANK() OVER (PARTITION BY field_name ORDER BY field_name) 
+
+-- 2. Detecting Duplication
+
+
