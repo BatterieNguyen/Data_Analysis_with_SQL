@@ -8,8 +8,12 @@ Window functions
       * When one or more field are speicfied, the function will operate only on that section of rows. 
     * `ORDER BY` - the order of opereated rows.
 
-___Syntax___:
+___Syntax___: ```function(field_name) OVER (PARTITION BY field_name ORDER BY field_name)```
+
 ```
-function(field_name) OVER (PARTITION BY field_name ORDER BY field_name)
+NTILE(num_bins) OVER (PARTITION BY field_name ORDER BY field_name)
 ```
 
+```
+PERCENT_RANK() OVER (PARTITION BY field_name ORDER BY field_name) 
+```
