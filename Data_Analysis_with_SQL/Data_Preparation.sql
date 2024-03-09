@@ -117,6 +117,15 @@ FROM 	your_table;
 -- 3.3.3. NULLIF()
 -- change it back into the null value
 
+-- 3.4. Missing Value
+-- 3.4.1 Detecting Missing Value -- LEFT JOIN and WHERE
+SELECT	DISTINCT ord.customer_id
+FROM	sales.orders ord
+	LEFT JOIN sales.customers cus ON ord.customer_id = cus.customer_id;
+
+-- 3.4.2. 
+
+
 
 
 
