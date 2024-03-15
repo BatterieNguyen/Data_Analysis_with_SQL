@@ -87,6 +87,7 @@ WITH	(
 			FIRSTROW = 2
 		);
 
+-- LEGISLATOR_TERMS DATASET
 DROP TABLE IF EXISTS legislator_terms;
 
 CREATE TABLE legislator_terms
