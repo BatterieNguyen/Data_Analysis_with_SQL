@@ -87,3 +87,38 @@ WITH	(
 			FIRSTROW = 2
 		);
 
+DROP TABLE IF EXISTS legislator_terms;
+
+CREATE TABLE legislator_terms
+	(
+		id_bioguide varchar(25)
+		,term_number int 
+		,term_id varchar(25) primary key
+		,term_type varchar(25)
+		,term_start date
+		,term_end date
+		,state varchar(25)
+		,district int
+		,class int
+		,party varchar(255)
+		,how varchar(255)
+		,url varchar(255)--terms_1_url
+		,address varchar(255) --terms_1_address
+		,phone varchar(25) --terms_1_phone
+		,fax varchar(25) --terms_1_fax
+		,contact_form varchar(255) --terms_1_contact_form
+		,office varchar(255) --terms_1_office
+		,state_rank varchar(25) --terms_1_state_rank
+		,rss_url varchar(255) --terms_1_rss_url
+		,caucus varchar(255) -- terms_1_caucus
+	);
+
+BULK INSERT legislator_terms
+FROM	'D:/0. Let''s Stress/DATA ANALYSIS/SQL/SQLServer/legislators_terms.csv'
+WITH	(
+			FORMAT = 'CSV',
+			FIELDTERMINATOR = ',',
+			ROWTERMINATOR = '0x0a',
+			FIRSTROW = 2
+		);
+
