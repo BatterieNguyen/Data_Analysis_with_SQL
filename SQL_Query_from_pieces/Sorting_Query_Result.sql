@@ -12,7 +12,7 @@ ORDER BY  SUBSTRING(job, len(job) -1, 2)
 
 CREATE VIEW V	AS
 	SELECT CONCAT(ename, ' ', deptno) AS data
-	FROM	emp
-
+	FROM	emp;
+	
 	SELECT * FROM V;
 
