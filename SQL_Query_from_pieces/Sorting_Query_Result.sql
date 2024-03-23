@@ -7,9 +7,8 @@ ORDER BY  SUBSTR(job, length(job) -1)
   -- SQL Server
 ORDER BY  SUBSTRING(job, len(job) -1, 2)
 
-
--- 1.2. Sorting mixed alphanumeric data
-
+-------------------------------------------------------------------------------------
+-- SORTING MIXED ALPHANUMERIC DATA
 CREATE VIEW V	AS
 	SELECT CONCAT(ename, ' ', deptno) AS data
 	FROM	emp;
