@@ -8,10 +8,20 @@ ORDER BY  SUBSTR(job, length(job) -1)
 ORDER BY  SUBSTRING(job, len(job) -1, 2)
 
 -------------------------------------------------------------------------------------
--- SORTING MIXED ALPHANUMERIC DATA
 CREATE VIEW V	AS
 	SELECT CONCAT(ename, ' ', deptno) AS data
 	FROM	emp;
 	
-	SELECT * FROM V;
+SELECT * FROM V;
+
+-- SORTING MIXED ALPHANUMERIC DATA
+-- Order by DEPTNO 
+SELECT	data
+FROM	V
+ORDER BY	REPLACE(data, REPLACE(TRANSLATE(data, '0123456789','##########'),'#',''),'')
+
+-- Order by Ename
+SELECT	data
+FROM	V
+ORDER BY	REPLACE(TRANSLATE(data, '0123456789','##########'),'#','')
 
