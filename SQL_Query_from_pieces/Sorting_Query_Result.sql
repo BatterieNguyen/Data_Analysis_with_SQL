@@ -1,5 +1,13 @@
----- SORTING BY SUBSTRING
+---- SORTING BY MULTIPLE FIELDS
 
+
+---- SORTING BY SUBSTRING
+/*
+	The order of precedence in ORDER BY  is from left to right.
+	Generally permitted to order by a column not in the SELECT list, 
+		but to do so you must explicitly name the column, 
+		instead of numeric position of a column
+*/
 -- 1.1. Sort value by the last 2 characters in the job field
   -- DB2 | MySQL | Oracle | PostgreSQL
 ORDER BY  SUBSTR(job, length(job) -1)
