@@ -7,7 +7,7 @@ Sorting by ...
 __Objective__ | __Version__ | __Command__ | __Argument__ 
 ------------- | ----------- | ----------- | ------------
 Substring     | SQL Server | SUBSTRING() | column_name, len(column_name) - 1, 2
-              | DB2, MySQL, Oracle, PosgreSQL  | SUBSTR() | column_name, len(column_name) - 1
+              | *all | SUBSTR() | column_name, len(column_name) - 1
 Mixed Alphanumeric Data | Oracle/ SQLServer/ PostgreSQL  | 
                       
 
