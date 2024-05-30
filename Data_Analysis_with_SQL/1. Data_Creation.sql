@@ -27,7 +27,7 @@ WITH (
       ROWTERMINATOR = '0x0a',
       FIRSTROW = 2
       );
-```
+
 ---------------------------------------------------------------------------------------
 /* SET UP CONSTRAINTS FOR COLUMNS */
 
