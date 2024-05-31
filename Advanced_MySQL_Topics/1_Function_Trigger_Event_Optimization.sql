@@ -19,10 +19,9 @@ DELIMITER;
 -- call out created procedure
 CALL GetAllClients();
 ------------------------------------------
-
 -- 2. Stored Function
 
--- SAMPLE --------------------------------------
+-- SAMPLE 
 DELIMITER //
 	CREATE FUNCTION GetCostAverage() RETURNS DECIMAL(5,2) DETERMINISTIC 
 	BEGIN
@@ -33,8 +32,6 @@ DELIMITER;
 -- Call out reated function
 SELECT GetCostAverage();
 -----------------------------------------------
-
-
 -- TASK 1: Create a SQL function that prints the cost value of a specific order based on the user input of the OrderID.
 
 CREATE FUNCTION FindCost(id INT) 
@@ -67,8 +64,17 @@ CREATE PROCEDURE GetDiscount(id INT)
 	END //
 DELIMITER ;
 
-CALL GetDiscount(10) 
-
+CALL GetDiscount(10)
+------------------------------------------
+-- Drop stored procedure if it existed
+IF EXISTS	(
+	SELECT *
+	FROM sys.objects 
+	WHERE object_id = OBJECT_ID(N'procedure_name')
+		 AND type IN (N'P', N'PC')
+)
+	DROP PROCEDURE dbo.procedure_name;
+------------------------------------------
 -- 3. MySQL triggers and events
 
 -- TASK 1: 
