@@ -1,11 +1,14 @@
 
-# USE lucky_shrub;
+-- USE lucky_shrub;
 
 ----------------------------------------------------------------------------------------------------------------------------------
-# Module1_Functions_and_Triggers
-# 1/ Stored Procedure
+-- MODULE 1 - FUNCTIONS AND TRIGGERS --
+---------------------------------------
 
--- SAMPLE ---------------------------------
+-- 1. Stored Procedure
+
+-- SAMPLE 
+
 DELIMITER //
 	CREATE PROCEDURE GetAllClients()
 	BEGIN
@@ -13,11 +16,12 @@ DELIMITER //
 	END //
 DELIMITER;
 
-# ------------------------------------------
+-- call out created procedure
 CALL GetAllClients();
-# ------------------------------------------
+------------------------------------------
 
-# 2/ Stored Function
+-- 2. Stored Function
+
 -- SAMPLE --------------------------------------
 DELIMITER //
 	CREATE FUNCTION GetCostAverage() RETURNS DECIMAL(5,2) DETERMINISTIC 
@@ -26,9 +30,9 @@ DELIMITER //
 	END //
 DELIMITER;
 
-# -----------------------------------------------
+-- Call out reated function
 SELECT GetCostAverage();
-# -----------------------------------------------
+-----------------------------------------------
 
 
 -- TASK 1: Create a SQL function that prints the cost value of a specific order based on the user input of the OrderID.
@@ -38,7 +42,6 @@ CREATE FUNCTION FindCost(id INT)
     (	SELECT	Cost
 		  FROM 	orders 
 		 WHERE	id = OrderID);
-
 
 SELECT FindCost(10)
 
@@ -66,7 +69,7 @@ DELIMITER ;
 
 CALL GetDiscount(10) 
 
-### MySQL triggers and events ###
+-- 3. MySQL triggers and events
 
 -- TASK 1: 
 DELIMITER //
@@ -87,7 +90,7 @@ DELIMITER ;
 INSERT INTO products (ProductID, ProductName, BuyPrice, SellPrice, NumofItems)
 	VALUES	("P7", "product P7", 40, 40, 100)
 
--- Task 2: 
+-- TASK 2: 
 
 DELIMITER //
 CREATE TRIGGER ProductSellPriceUpdateCheck
@@ -102,7 +105,7 @@ CREATE TRIGGER ProductSellPriceUpdateCheck
 DELIMITER ;
 
 
--- Task 3:
+-- TASK 3:
 DELIMITER //
 CREATE TRIGGER NotifyProductDelete
 	AFTER DELETE
@@ -116,15 +119,16 @@ DELIMITER ;
 DELETE FROM Products WHERE ProductID='P7';
 
 ----------------------------------------------------------------------------------------------------------------------------------
-# Module3_Data_Optimization
-### SELECT statement optimization in MySQL
+-- MODULE 3 - DATA OPTIMIZATION --
+----------------------------------
 
+-- SELECT statement optimization in MySQL
 -- Task 1
+
 SELECT OrderID, ProductID, Quantity, Date
 FROM orders
 
-
-## => Do not select all column if not necessary
+-- => Do not select all column if not necessary
 
 -- Task 2: optimize this query by creating an index named IdxClientID on the required column of the Orders table
 
@@ -195,7 +199,8 @@ RETURN (SELECT SUM(Quantity)
 SELECT FindSoldQuantity ("P3", 2021);
 
 ----------------------------------------------------------------------------------------------------------------------------------
-# Module4_Conduct a data analysis for a client persona
+-- MODULE 4 - CONDUCT A DATA ANALYSIS FOR A CLIENT PERSONA --
+-------------------------------------------------------------
 
 # Task 1: 
 # Lucky Shrub need to find out what their average sale price, or cost was for a product in 2022.
