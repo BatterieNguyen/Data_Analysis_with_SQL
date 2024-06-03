@@ -5,10 +5,11 @@
  <p align = "center";> 
 	 MODULE 1 - FUNCTIONS AND TRIGGERS 
  </p>
-------------------------------------------
-# Stored Procedure
 
--- SAMPLE 
+------------------------------------------
+
+# 1. Stored Procedure
+
 ```
 DELIMITER //
 	CREATE PROCEDURE GetAllClients()
@@ -38,8 +39,25 @@ SQL SERVER
 			ORDER BY orders DESC
 		END;
 ```
+
+Create stored procedure with input is the name of table in the command `FROM`
+```
+	CREATE PROCEDURE view_table
+		@table NVARCHAR(128)
+	AS
+	BEGIN
+    	DECLARE @sql NVARCHAR(MAX);
+    	SET @sql = N'SELECT * FROM ' + QUOTENAME(@table);
+		EXEC sp_executesql @sql;
+	END;
+```
+**Code Breakdown**
+- `@sql` - variable used to store the dynamic SQL is used to construct the query with `@table` parameter
+- `QUUOTENAME` - function used to properly handle the table name and protect against SQL injection.
+- `EXEC sp_executesql` - system stored procedure executing the @sql
+
 ------------------------------------------
-2. Stored Function
+# 2. Stored Function
 
 ```
 	DELIMITER //
