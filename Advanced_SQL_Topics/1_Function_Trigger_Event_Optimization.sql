@@ -18,6 +18,22 @@ DELIMITER;
 
 -- call out created procedure
 CALL GetAllClients();
+
+-- SQL SERVER 
+	CREATE PROCEDURE DemandByRegions
+		@country VARCHAR(25)
+	AS
+		BEGIN
+			SELECT	reg.Country
+					, reg.City
+					, COUNT(ord.customer_index) AS orders
+			FROM	Sales_Orders ord
+						INNER JOIN regions reg	ON ord.delivery_region_index = reg.region_index
+			WHERE	@country = reg.Country
+			GROUP BY	reg.Country
+						, reg.City
+			ORDER BY orders DESC
+		END;
 ------------------------------------------
 -- 2. Stored Function
 
