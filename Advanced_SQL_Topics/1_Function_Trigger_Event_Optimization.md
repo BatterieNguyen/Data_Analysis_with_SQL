@@ -5,11 +5,8 @@
  <p align = "center";> 
 	 MODULE 1 - FUNCTIONS AND TRIGGERS 
  </p>
-
-
----------------------------------------
-
--- 1. Stored Procedure
+------------------------------------------
+# Stored Procedure
 
 -- SAMPLE 
 ```
