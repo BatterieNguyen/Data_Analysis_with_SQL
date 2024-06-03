@@ -2,13 +2,10 @@
 -- USE lucky_shrub;
 
 ----------------------------------------------------------------------------------------------------------------------------------
-<p align = "center";> 
-	MODULE 1 - FUNCTIONS AND TRIGGERS
-</p>
+ <p align = "center";> 
+	 MODULE 1 - FUNCTIONS AND TRIGGERS 
+ </p>
 
-<p style="text-align:center">
-	MODULE 1 - FUNCTIONS AND TRIGGERS
-</p>
 
 ---------------------------------------
 
@@ -23,10 +20,12 @@ DELIMITER //
 	END //
 DELIMITER;
 ```
--- call out created procedure
+call out created procedure
+```
 CALL GetAllClients();
-
--- SQL SERVER 
+```
+SQL SERVER 
+```
 	CREATE PROCEDURE DemandByRegions
 		@country VARCHAR(25)
 	AS
@@ -41,21 +40,24 @@ CALL GetAllClients();
 						, reg.City
 			ORDER BY orders DESC
 		END;
+```
 ------------------------------------------
--- 2. Stored Function
+2. Stored Function
 
--- SAMPLE 
-DELIMITER //
-	CREATE FUNCTION GetCostAverage() RETURNS DECIMAL(5,2) DETERMINISTIC 
-	BEGIN
-		RETURN (SELECT AVG(Cost) FROM Orders);
-	END //
-DELIMITER;
-
--- Call out reated function
+```
+	DELIMITER //
+		CREATE FUNCTION GetCostAverage() RETURNS DECIMAL(5,2) DETERMINISTIC 
+		BEGIN
+			RETURN (SELECT AVG(Cost) FROM Orders);
+		END //
+	DELIMITER;
+```
+Call out reated function
+```
 SELECT GetCostAverage();
+```
 -----------------------------------------------
--- TASK 1: Create a SQL function that prints the cost value of a specific order based on the user input of the OrderID.
+TASK 1: Create a SQL function that prints the cost value of a specific order based on the user input of the OrderID.
 
 CREATE FUNCTION FindCost(id INT) 
 	RETURNS DECIMAL(5,2) DETERMINISTIC RETURN 
