@@ -2,20 +2,27 @@
 -- USE lucky_shrub;
 
 ----------------------------------------------------------------------------------------------------------------------------------
--- MODULE 1 - FUNCTIONS AND TRIGGERS --
+<p align = "center";> 
+	MODULE 1 - FUNCTIONS AND TRIGGERS
+</p>
+
+<p style="text-align:center">
+	MODULE 1 - FUNCTIONS AND TRIGGERS
+</p>
+
 ---------------------------------------
 
 -- 1. Stored Procedure
 
 -- SAMPLE 
-
+```
 DELIMITER //
 	CREATE PROCEDURE GetAllClients()
 	BEGIN
 		SELECT * FROM Clients;
 	END //
 DELIMITER;
-
+```
 -- call out created procedure
 CALL GetAllClients();
 
