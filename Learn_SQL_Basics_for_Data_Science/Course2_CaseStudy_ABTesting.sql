@@ -1,20 +1,17 @@
-# TEST ASSIGNMENT
+-- TEST ASSIGNMENT
 
-__Exercise 1: Counting Tests__
+-- Exercise 1: Counting Tests
 
-__Figure out how many tests we have running right now__
-```
-SELECT
-    DISTINCT parameter_value AS test_id
-FROM
-    dsv1069.events
-WHERE
-    event_name = 'test_assignment' AND parameter_name = 'test_id';
-```
-__Exercise 2: Sanity Check - Missing Data__
+    -- Figure out how many tests we have running right now
 
-__Check for potential problems with test assignments --> Make sure there is no data obviously missing__
-```
+SELECT    DISTINCT parameter_value AS test_id
+FROM         dsv1069.events
+WHERE        event_name = 'test_assignment' AND parameter_name = 'test_id';
+
+-- Exercise 2: Sanity Check - Missing Data
+
+    -- Check for potential problems with test assignments --> Make sure there is no data obviously missing
+
 SELECT 
     parameter_value    AS test_id,
     DATE(event_time)   AS day,
@@ -25,8 +22,8 @@ WHERE
     event_name = 'test_assignment'    AND parameter_name = 'test_id'
 GROUP BY
     parameter_value, DATE(event_time);
-```
-__Exercise 3: Assignment Events Table__
+
+-- Exercise 3: Assignment Events Table
 
 __Write a query returns a table of assignment and dates for each test__
 ```
@@ -48,7 +45,7 @@ GROUP BY
     event_id, event_time, user_id, platform
 ORDER BY
     event_id;
-```
+
 
 __Exercise 4: Santity Check Assignments__
 
