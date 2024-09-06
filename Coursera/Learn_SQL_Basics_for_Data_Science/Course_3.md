@@ -21,7 +21,9 @@ Spark is the open-source industry standard tool for manipulating big data
 * It works with SQL, Python, R, and Scala/ Java
 * It distributes computation across a cluster of networked computers
 
-
+RDD
+* Resilient - Fault-tolerant, DAG (directed acyclic graph)
+* Distributed - Computed across multiple nodes
 
 -----------
 ## Module 2 - Spark Core Concepts
