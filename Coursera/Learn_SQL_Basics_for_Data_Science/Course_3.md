@@ -7,6 +7,22 @@
 > * Spark Dataframes
 > * Databricks collaborative workspace with SQL
 
+__The 5 V's:__
+* Volume
+* Velocity
+* Variety
+* Veracity
+* Value
+
+Apache Spark: The Unified Analytics Engine
+
+Spark is the open-source industry standard tool for manipulating big data 
+* It connects to a large number of data sources
+* It works with SQL, Python, R, and Scala/ Java
+* It distributes computation across a cluster of networked computers
+
+
+
 -----------
 ## Module 2 - Spark Core Concepts
 > Learning Objectives
